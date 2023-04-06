@@ -1,0 +1,71 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DataGridExample.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:models="clr-namespace:DataGridExample.Models"
+		xmlns:converters="clr-namespace:DataGridExample.Views.Converters"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="DataGridExample.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="DataGridExample">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+	<Window.Resources>
+		<converters:TermScoreToSolidColorBrush x:Key="termScoreToSolidColorBrush"/>
+	</Window.Resources>
+
+	<Grid RowDefinitions="0.5*, 0.5*">
+		<DataGrid Items="{Binding Ints}" AutoGenerateColumns="True"
+				  CanUserReorderColumns="True" CanUserResizeColumns="True"
+				  CanUserSortColumns="True"/>
+
+		<DataGrid Grid.Row="1" Items="{Binding Students}"
+				  AutoGenerateColumns="False" CanUserReorderColumns="True"
+				  CanUserResizeColumns="True"
+				  CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="First Name" Binding="{Binding FirstName}"/>
+				<DataGridTextColumn Header="Second Name" Binding="{Binding SecondName}"/>
+				<DataGridCheckBoxColumn Header="Is semester work done?"
+										Binding="{Binding IsSemesterWorkDone}"/>
+				<DataGridTemplateColumn Header="First term score">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate DataType="{x:Type	models:Student}">
+							<Border Background="{Binding FirstTermScore,
+									Converter={StaticResource termScoreToSolidColorBrush}}">
+								<TextBlock Text="{Binding FirstTermScore}"/>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate> 
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Second term score">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate DataType="{x:Type	models:Student}">
+							<Border Background="{Binding SecondTermScore,
+									Converter={StaticResource termScoreToSolidColorBrush}}">
+								<TextBlock Text="{Binding SecondTermScore}"/>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+
+					<DataGridTemplateColumn.CellEditingTemplate>
+						<DataTemplate DataType="{x:Type	models:Student}">
+							<Border>
+								<TextBox Text="{Binding SecondTermScore}"/>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellEditingTemplate>
+				</DataGridTemplateColumn>			
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+	
+
+</Window>
